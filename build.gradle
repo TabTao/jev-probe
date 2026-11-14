@@ -1,0 +1,33 @@
+plugins {
+    id 'com.android.application' version '8.7.3'
+}
+
+android {
+    namespace 'com.jevprobe'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.jevprobe'
+        minSdk 29
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['java']
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lint {
+        abortOnError false
+    }
+}

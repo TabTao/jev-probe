@@ -141,13 +141,20 @@ public class MainActivity extends Activity {
         if (intent == null) return;
         String action = intent.getAction() == null ? "(none)" : intent.getAction();
 
+        String referrer;
+        try {
+            referrer = getReferrer() == null ? "(none)" : getReferrer().toString();
+        } catch (Throwable t) {
+            referrer = "(unavailable)";
+        }
+
         StringBuilder meta = new StringBuilder();
         meta.append("action   : ").append(action).append('\n');
         meta.append("type     : ").append(intent.getType()).append('\n');
         meta.append("data     : ").append(intent.getData()).append('\n');
         meta.append("flags    : 0x").append(Integer.toHexString(intent.getFlags())).append('\n');
         meta.append("callingPkg: ").append(callingPackage()).append('\n');
-        meta.append("referrer : ").append(intent.getReferrer() == null ? "(none)" : intent.getReferrer().toString()).append('\n');
+        meta.append("referrer : ").append(referrer).append('\n');
         meta.append("device   : ").append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
                 .append(" / SDK ").append(Build.VERSION.SDK_INT).append('\n');
         meta.append("time     : ").append(now()).append('\n');
@@ -259,9 +266,8 @@ public class MainActivity extends Activity {
         cv.put(MediaStore.Downloads.MIME_TYPE, "text/plain");
         cv.put(MediaStore.Downloads.RELATIVE_PATH, DIR);
         cv.put(MediaStore.Downloads.IS_PENDING, 1);
-        Uri uri = null;
         try {
-            uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
+            Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
             if (uri == null) return "(insert failed)";
             try (OutputStream os = getContentResolver().openOutputStream(uri)) {
                 os.write(content.getBytes(StandardCharsets.UTF_8));
